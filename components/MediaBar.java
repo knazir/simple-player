@@ -4,6 +4,9 @@
  */
 package components;
 
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -33,6 +36,7 @@ public class MediaBar extends HBox {
 		addComponents();
 		
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
 			public void handle(ActionEvent e) {
 				Status status = myPlayer.getStatus();
 				
@@ -48,6 +52,22 @@ public class MediaBar extends HBox {
 					myPlayer.play();
 					playButton.setText("||");
 				}
+			}
+		});
+		
+		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable obsv) {
+				updateTime();
+			}
+		});
+	}
+	
+	private void updateTime() {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
+				timeSlider.setValue(currentTime);
 			}
 		});
 	}
