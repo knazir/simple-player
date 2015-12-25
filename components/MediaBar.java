@@ -56,17 +56,17 @@ public class MediaBar extends HBox {
 		});
 		
 		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
-			@Override
 			public void invalidated(Observable obsv) {
 				updateTime();
 			}
 		});
 	}
 	
-	private void updateTime() {
+	protected void updateTime() {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
+				System.out.println("Current time: " + currentTime);
 				timeSlider.setValue(currentTime);
 			}
 		});
