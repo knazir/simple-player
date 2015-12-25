@@ -19,21 +19,30 @@ public class Player extends BorderPane {
 	private MediaBar mediaBar;
 	
 	public Player(String filename) {
-		// instantiate private members
+		initializeComponents(filename);
+		setupView();
+		setupMediaBar();
+		this.player.play();
+	}
+
+	/** Instantiates members */
+	private void initializeComponents(String filename) {
 		this.media = new Media(filename);
 		this.player = new MediaPlayer(media);
 		this.view = new MediaView(player);
 		this.mediaPane = new Pane();
-		
-		// set up view
+	}
+	
+	/** Sets up player view */
+	private void setupView() {
 		this.mediaPane.getChildren().add(view);
 		setCenter(mediaPane);	// adds media pane to center of components
-		
-		// set up media bar
+	}
+	
+	/** Initializes and sets up media bar */
+	private void setupMediaBar() {
 		this.mediaBar = new MediaBar(this.player);
 		setBottom(this.mediaBar);
 		setStyle(PlayerConstants.BAR_BG_COLOR);
-		
-		this.player.play();
-	}
+	}	
 }
