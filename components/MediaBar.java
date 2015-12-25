@@ -73,7 +73,7 @@ public class MediaBar extends HBox {
 
 	private void setupListeners() {
 		setupPlayButtonListeners();
-		setupTimeSliderListeners();
+		setupSliderListeners();
 	}
 	
 	private void setupPlayButtonListeners() {
@@ -98,22 +98,11 @@ public class MediaBar extends HBox {
 		});
 	}
 	
-	private void setupTimeSliderListeners() {
+	private void setupSliderListeners() {
 		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable obsv) {
 				updateTime();
-			}
-		});
-	}
-	
-	protected void updateTime() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				// calculated time as percentage of whole video
-				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
-				timeSlider.setValue(currentTime);
 			}
 		});
 		
@@ -126,6 +115,27 @@ public class MediaBar extends HBox {
 				}
 			}
 			
+		});
+		
+		volumeSlider.valueProperty().addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable obsv) {
+				if (volumeSlider.isPressed()) {
+					double newVolume = volumeSlider.getValue()/100;
+					myPlayer.setVolume(newVolume);
+				}
+			}
+		});
+	}
+	
+	protected void updateTime() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// calculated time as percentage of whole video
+				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
+				timeSlider.setValue(currentTime);
+			}
 		});
 	}
 	
