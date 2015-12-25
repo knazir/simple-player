@@ -1,9 +1,11 @@
 /* The MediaBar class handles setting up the time slider and
- * volume bar for the media player. An instance of the class
+ * volume bar for the media myPlayer. An instance of the class
  * should be added to the bottom of a Player object.
  */
 package components;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 
 public class MediaBar extends HBox {
 
@@ -19,15 +22,34 @@ public class MediaBar extends HBox {
 	private Slider volumeSlider = new Slider();
 	private Button playButton = new Button("||");
 	private Label volumeLabel = new Label("Volume: ");
-	private MediaPlayer player;
+	private MediaPlayer myPlayer;
 
 	public MediaBar(MediaPlayer player) {
-		this.player = player;
+		this.myPlayer = player;
 		setupVisuals();
 		setupVolumeSlider();
 		setupTimeSlider();
 		setupPlayButton();
 		addComponents();
+		
+		playButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Status status = myPlayer.getStatus();
+				
+				if (status == status.PLAYING) {
+					if (myPlayer.getCurrentTime().greaterThanOrEqualTo(myPlayer.getTotalDuration())) {
+						myPlayer.seek(myPlayer.getStartTime());
+						myPlayer.play();
+					} else {
+						myPlayer.pause();
+						playButton.setText("►");
+					}
+				} else if (status == status.PAUSED || status == status.HALTED || status == status.STOPPED) {
+					myPlayer.play();
+					playButton.setText("||");
+				}
+			}
+		});
 	}
 
 	/** Sets up media bar visuals (alignment and bar padding */
