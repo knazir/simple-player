@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 
 public class MediaBar extends HBox {
 
@@ -34,42 +35,7 @@ public class MediaBar extends HBox {
 		setupTimeSlider();
 		setupPlayButton();
 		addComponents();
-		
-		playButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				Status status = myPlayer.getStatus();
-				
-				if (status == status.PLAYING) {
-					if (myPlayer.getCurrentTime().greaterThanOrEqualTo(myPlayer.getTotalDuration())) {
-						myPlayer.seek(myPlayer.getStartTime());
-						myPlayer.play();
-					} else {
-						myPlayer.pause();
-						playButton.setText("►");
-					}
-				} else if (status == status.PAUSED || status == status.HALTED || status == status.STOPPED) {
-					myPlayer.play();
-					playButton.setText("||");
-				}
-			}
-		});
-		
-		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
-			public void invalidated(Observable obsv) {
-				updateTime();
-			}
-		});
-	}
-	
-	protected void updateTime() {
-		Platform.runLater(new Runnable() {
-			public void run() {
-				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
-				System.out.println("Current time: " + currentTime);
-				timeSlider.setValue(currentTime);
-			}
-		});
+		setupListeners();
 	}
 
 	/** Sets up media bar visuals (alignment and bar padding */
@@ -104,4 +70,63 @@ public class MediaBar extends HBox {
 		getChildren().add(this.volumeSlider);	
 	}
 
+
+	private void setupListeners() {
+		setupPlayButtonListeners();
+		setupTimeSliderListeners();
+	}
+	
+	private void setupPlayButtonListeners() {
+		playButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Status status = myPlayer.getStatus();
+				
+				if (status == status.PLAYING) {
+					if (myPlayer.getCurrentTime().greaterThanOrEqualTo(myPlayer.getTotalDuration())) {
+						myPlayer.seek(myPlayer.getStartTime());
+						myPlayer.play();
+					} else {
+						myPlayer.pause();
+						playButton.setText("►");
+					}
+				} else if (status == status.PAUSED || status == status.HALTED || status == status.STOPPED) {
+					myPlayer.play();
+					playButton.setText("||");
+				}
+			}
+		});
+	}
+	
+	private void setupTimeSliderListeners() {
+		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable obsv) {
+				updateTime();
+			}
+		});
+	}
+	
+	protected void updateTime() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// calculated time as percentage of whole video
+				double currentTime = myPlayer.getCurrentTime().toMillis() / myPlayer.getTotalDuration().toMillis() * 100;
+				timeSlider.setValue(currentTime);
+			}
+		});
+		
+		timeSlider.valueProperty().addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable obsv) {
+				if (timeSlider.isPressed()) {
+					Duration newTime = myPlayer.getMedia().getDuration().multiply(timeSlider.getValue()/100);
+					myPlayer.seek(newTime);
+				}
+			}
+			
+		});
+	}
+	
 }
