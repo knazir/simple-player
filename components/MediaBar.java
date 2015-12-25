@@ -70,14 +70,16 @@ public class MediaBar extends HBox {
 		getChildren().add(this.volumeSlider);	
 	}
 
-
+	/** Sets up listeners for buttons and sliders */
 	private void setupListeners() {
 		setupPlayButtonListeners();
 		setupSliderListeners();
 	}
 	
+	/** Sets up listeners for the play/pause button */
 	private void setupPlayButtonListeners() {
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
+			
 			@Override
 			public void handle(ActionEvent e) {
 				Status status = myPlayer.getStatus();
@@ -98,8 +100,10 @@ public class MediaBar extends HBox {
 		});
 	}
 	
+	/** Sets up listeners for all sliders */
 	private void setupSliderListeners() {
 		myPlayer.currentTimeProperty().addListener(new InvalidationListener() {
+			
 			@Override
 			public void invalidated(Observable obsv) {
 				updateTime();
@@ -107,6 +111,7 @@ public class MediaBar extends HBox {
 		});
 		
 		timeSlider.valueProperty().addListener(new InvalidationListener() {
+			
 			@Override
 			public void invalidated(Observable obsv) {
 				if (timeSlider.isPressed()) {
@@ -118,6 +123,7 @@ public class MediaBar extends HBox {
 		});
 		
 		volumeSlider.valueProperty().addListener(new InvalidationListener() {
+			
 			@Override
 			public void invalidated(Observable obsv) {
 				if (volumeSlider.isPressed()) {
@@ -128,8 +134,10 @@ public class MediaBar extends HBox {
 		});
 	}
 	
+	/** Updates the time slider's current time as the video plays */
 	protected void updateTime() {
 		Platform.runLater(new Runnable() {
+			
 			@Override
 			public void run() {
 				// calculated time as percentage of whole video

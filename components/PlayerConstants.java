@@ -14,9 +14,10 @@ public class PlayerConstants {
 			"file:/Users/Kashif/Desktop/lecture-videos/bitwise-operators.mp4";
 
 	// Application Size Constants
+	public static final int MENU_BUFFER = 25;
 	public static final int MEDIA_BAR_BUFFER = 35;
 	public static final int APPLICATION_WIDTH = 640;
-	public static final int APPLICATION_HEIGHT = 480 + MEDIA_BAR_BUFFER;
+	public static final int APPLICATION_HEIGHT = 480 + MEDIA_BAR_BUFFER + MENU_BUFFER;
 	
 	// Media Bar Constants
 	public static final String BAR_BG_COLOR = "-fx-background-color: #bfc2c7";

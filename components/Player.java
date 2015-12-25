@@ -24,6 +24,14 @@ public class Player extends BorderPane {
 		setupMediaBar();
 		this.player.play();
 	}
+	
+	public int getMediaWidth() {
+		return media.getWidth();
+	}
+	
+	public int getMediaHeight() {
+		return media.getHeight();
+	}
 
 	/** Instantiates members */
 	private void initializeComponents(String filename) {
@@ -44,5 +52,9 @@ public class Player extends BorderPane {
 		this.mediaBar = new MediaBar(this.player);
 		setBottom(this.mediaBar);
 		setStyle(PlayerConstants.BAR_BG_COLOR);
-	}	
+	}
+	
+	public MediaPlayer getPlayer() {
+		return player;
+	}
 }
